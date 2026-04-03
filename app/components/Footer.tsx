@@ -4,7 +4,7 @@ export const Footer = () => {
             <div className="space-y-2">
                 <div className="flex justify-between items-center">
                     <span>Email</span>
-                    <a href="mailto:gchendom@gmail.com">gchendom@gmail.com</a>
+                    <a href="mailto:gchendom@gmail.com">gchendomi@gmail.com</a>
                 </div>
                 <div className="flex justify-between items-center">
                     <span>LinkedIn</span>
