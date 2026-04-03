@@ -1,3 +1,5 @@
+import { InterestsSection } from './interests/InterestsSection';
+
 export const About = () => {
     return (
         <div className="mt-12 mb-6">
@@ -14,11 +16,8 @@ export const About = () => {
 
                 <div className="mb-8">
                     <h2 className="font-bold">Interests & Hobbies</h2>
-                    <ul className="list-disc list-inside">
-                        <li>Formula 1 - Ferrari</li>
-                        <li>NBA - Warriors</li>
-                        <li>Traveling</li> 
-                        {/* // My travels, able to click it and put pins on a map of where I've been */}
+                    <InterestsSection />
+                    <ul className="list-disc list-inside mt-4">
                         <li>Cooking</li>
                     </ul>
                 </div>
