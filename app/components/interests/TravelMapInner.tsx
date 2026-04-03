@@ -25,7 +25,11 @@ const TRAVEL_LOCATIONS: { name: string; lat: number; lng: number }[] = [
 ];
 
 export const TravelMapInner = () => (
-    <div className="rounded-lg overflow-hidden border border-neutral-200 dark:border-neutral-800 h-64">
+    <div className="rounded-lg overflow-hidden border border-neutral-200 dark:border-neutral-800">
+        <div className="px-3 py-2 text-xs font-medium text-neutral-500 dark:text-neutral-400 border-b border-neutral-200 dark:border-neutral-800">
+            Places I've Traveled
+        </div>
+        <div className="h-64">
         <MapContainer
             center={[30, 60]}
             zoom={2}
@@ -42,5 +46,6 @@ export const TravelMapInner = () => (
                 </Marker>
             ))}
         </MapContainer>
+        </div>
     </div>
 );

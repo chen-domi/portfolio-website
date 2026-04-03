@@ -11,7 +11,7 @@ interface ESPNTeam {
 interface ESPNCompetitor {
     homeAway: 'home' | 'away';
     team: ESPNTeam;
-    score?: string;
+    score?: string | { value: number; displayValue: string };
 }
 interface ESPNStatusType {
     name: string;        // "STATUS_SCHEDULED", "STATUS_FINAL", etc.
@@ -32,6 +32,11 @@ interface ESPNScheduleResponse {
     events: ESPNEvent[];
 }
 
+function scoreStr(score: string | { value: number; displayValue: string } | undefined): string | undefined {
+    if (score === undefined) return undefined;
+    return typeof score === 'string' ? score : score.displayValue;
+}
+
 function formatGameDate(dateStr: string): string {
     const d = new Date(dateStr);
     return d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
@@ -43,6 +48,7 @@ function formatGameTime(dateStr: string): string {
 }
 
 export const WarriorsWidget = () => {
+    const [lastGame, setLastGame] = useState<ESPNEvent | null>(null);
     const [nextGame, setNextGame] = useState<ESPNEvent | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(false);
@@ -52,6 +58,10 @@ export const WarriorsWidget = () => {
             .then(r => r.json() as Promise<ESPNScheduleResponse>)
             .then(data => {
                 const now = new Date();
+                const finals = data.events.filter(e =>
+                    e.competitions[0]?.status?.type?.name === 'STATUS_FINAL'
+                );
+                setLastGame(finals[finals.length - 1] ?? null);
                 const upcoming = data.events.find(e => {
                     const isFinal = e.competitions[0]?.status?.type?.name === 'STATUS_FINAL';
                     return !isFinal && new Date(e.date) >= now;
@@ -62,10 +72,20 @@ export const WarriorsWidget = () => {
             .finally(() => setLoading(false));
     }, []);
 
-    const competition = nextGame?.competitions[0];
-    const warriors = competition?.competitors.find(c => c.team.abbreviation === 'GS');
-    const opponent = competition?.competitors.find(c => c.team.abbreviation !== 'GS');
-    const isHome = warriors?.homeAway === 'home';
+    const lastComp = lastGame?.competitions[0];
+    const lastWarriors = lastComp?.competitors.find(c => c.team.abbreviation === 'GS');
+    const lastOpponent = lastComp?.competitors.find(c => c.team.abbreviation !== 'GS');
+    const lastIsHome = lastWarriors?.homeAway === 'home';
+    const warriorsScore = scoreStr(lastWarriors?.score);
+    const opponentScore = scoreStr(lastOpponent?.score);
+    const warriorsWon = warriorsScore !== undefined && opponentScore !== undefined
+        ? parseInt(warriorsScore) > parseInt(opponentScore)
+        : null;
+
+    const nextComp = nextGame?.competitions[0];
+    const nextWarriors = nextComp?.competitors.find(c => c.team.abbreviation === 'GS');
+    const nextOpponent = nextComp?.competitors.find(c => c.team.abbreviation !== 'GS');
+    const nextIsHome = nextWarriors?.homeAway === 'home';
 
     return (
         <div className="rounded-lg border border-neutral-200 dark:border-neutral-800 p-4">
@@ -78,6 +98,7 @@ export const WarriorsWidget = () => {
                 <div className="space-y-2">
                     <div className="animate-pulse bg-neutral-100 dark:bg-neutral-900 rounded h-3 w-3/4" />
                     <div className="animate-pulse bg-neutral-100 dark:bg-neutral-900 rounded h-3 w-1/2" />
+                    <div className="animate-pulse bg-neutral-100 dark:bg-neutral-900 rounded h-3 w-2/3" />
                 </div>
             )}
 
@@ -85,28 +106,57 @@ export const WarriorsWidget = () => {
                 <p className="text-xs text-neutral-400">Could not load schedule.</p>
             )}
 
-            {!loading && !error && !nextGame && (
-                <p className="text-xs text-neutral-400">No upcoming games.</p>
-            )}
-
-            {!loading && !error && nextGame && (
-                <div>
-                    <p className="text-xs text-neutral-500 dark:text-neutral-400 mb-1">Next Game</p>
-                    <p className="text-xs font-medium">
-                        {isHome ? 'vs' : '@'} {opponent?.team.shortDisplayName ?? opponent?.team.displayName}
-                    </p>
-                    {competition?.venue?.fullName && (
-                        <p className="text-xs text-neutral-500 dark:text-neutral-400 truncate">
-                            {competition.venue.fullName}
-                        </p>
+            {!loading && !error && (
+                <>
+                    {lastGame && (
+                        <div className="mb-3">
+                            <p className="text-xs text-neutral-500 dark:text-neutral-400 mb-1">Last Game</p>
+                            <p className="text-xs font-medium">
+                                {lastIsHome ? 'vs' : '@'} {lastOpponent?.team.shortDisplayName ?? lastOpponent?.team.displayName}
+                            </p>
+                            <p className="text-xs text-neutral-500 dark:text-neutral-400">
+                                {formatGameDate(lastGame.date)}
+                            </p>
+                            {warriorsScore !== undefined && opponentScore !== undefined && (
+                                <p className="text-xs font-medium mt-1">
+                                    <span className={warriorsWon ? 'text-green-600 dark:text-green-400' : 'text-red-500'}>
+                                        {warriorsWon ? 'W' : 'L'}
+                                    </span>
+                                    <span className="text-neutral-500 dark:text-neutral-400 ml-1">
+                                        {warriorsScore}–{opponentScore}
+                                    </span>
+                                </p>
+                            )}
+                        </div>
                     )}
-                    <p className="text-xs text-neutral-500 dark:text-neutral-400">
-                        {formatGameDate(nextGame.date)}
-                    </p>
-                    <p className="text-xs text-neutral-500 dark:text-neutral-400">
-                        {formatGameTime(nextGame.date)}
-                    </p>
-                </div>
+
+                    {nextGame && (
+                        <>
+                            <div className="border-t border-neutral-100 dark:border-neutral-800 my-3" />
+                            <div>
+                                <p className="text-xs text-neutral-500 dark:text-neutral-400 mb-1">Next Game</p>
+                                <p className="text-xs font-medium">
+                                    {nextIsHome ? 'vs' : '@'} {nextOpponent?.team.shortDisplayName ?? nextOpponent?.team.displayName}
+                                </p>
+                                {nextComp?.venue?.fullName && (
+                                    <p className="text-xs text-neutral-500 dark:text-neutral-400 truncate">
+                                        {nextComp.venue.fullName}
+                                    </p>
+                                )}
+                                <p className="text-xs text-neutral-500 dark:text-neutral-400">
+                                    {formatGameDate(nextGame.date)}
+                                </p>
+                                <p className="text-xs text-neutral-500 dark:text-neutral-400">
+                                    {formatGameTime(nextGame.date)}
+                                </p>
+                            </div>
+                        </>
+                    )}
+
+                    {!lastGame && !nextGame && (
+                        <p className="text-xs text-neutral-400">No games found.</p>
+                    )}
+                </>
             )}
         </div>
     );

@@ -18,7 +18,7 @@ export const About = () => {
                     <h2 className="font-bold">Interests & Hobbies</h2>
                     <InterestsSection />
                     <ul className="list-disc list-inside mt-4">
-                        <li>Cooking</li>
+ 
                     </ul>
                 </div>
             </section>

@@ -12,12 +12,24 @@ export const Footer = () => {
                         linkedin.com/in/chendomi
                     </a>
                 </div>
-                <div className="flex justify-between items-center">
+                {/* <div className="flex justify-between items-center">
                     <span>X/Twitter</span>
                     <a href="https://x.com/chendominic" target="_blank" rel="noopener noreferrer">
                         @chendominic
                     </a>
+                </div> */}
+                <div className="flex justify-between items-center">
+                    <span>GitHub</span>
+                    <a href="https://github.com/chen-domi" target="_blank" rel="noopener noreferrer">
+                        github.com/chen-domi
+                    </a>
                 </div>
+            </div>
+             <div className="mt-6 text-xs text-neutral-400">
+                © 2024 Dominic Chen. All rights reserved.
+            </div>
+             <div className="text-xs text-neutral-400">
+                Built with Next.js and Tailwind CSS.
             </div>
         </footer>
     )
