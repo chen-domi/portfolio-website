@@ -22,7 +22,7 @@ export const Clock = () => {
 
 export const Header = () => {
     return (
-        <div className="justify-between">
+        <div className="flex justify-between">
             <span>Boston, USA</span>
             <Clock />
         </div>
