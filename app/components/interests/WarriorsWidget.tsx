@@ -12,6 +12,7 @@ interface ESPNCompetitor {
     homeAway: 'home' | 'away';
     team: ESPNTeam;
     score?: string | { value: number; displayValue: string };
+    record?: Array<{ type: string; displayValue: string }>;
 }
 interface ESPNStatusType {
     name: string;        // "STATUS_SCHEDULED", "STATUS_FINAL", etc.
@@ -50,6 +51,7 @@ function formatGameTime(dateStr: string): string {
 export const WarriorsWidget = () => {
     const [lastGame, setLastGame] = useState<ESPNEvent | null>(null);
     const [nextGame, setNextGame] = useState<ESPNEvent | null>(null);
+    const [record, setRecord] = useState<string | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(false);
 
@@ -61,7 +63,11 @@ export const WarriorsWidget = () => {
                 const finals = data.events.filter(e =>
                     e.competitions[0]?.status?.type?.name === 'STATUS_FINAL'
                 );
-                setLastGame(finals[finals.length - 1] ?? null);
+                const lastFinal = finals[finals.length - 1] ?? null;
+                setLastGame(lastFinal);
+                const warriorsInLast = lastFinal?.competitions[0]?.competitors.find(c => c.team.abbreviation === 'GS');
+                const overallRecord = warriorsInLast?.record?.find(r => r.type === 'total');
+                if (overallRecord) setRecord(overallRecord.displayValue);
                 const upcoming = data.events.find(e => {
                     const isFinal = e.competitions[0]?.status?.type?.name === 'STATUS_FINAL';
                     return !isFinal && new Date(e.date) >= now;
@@ -89,9 +95,14 @@ export const WarriorsWidget = () => {
 
     return (
         <div className="rounded-lg border border-neutral-200 dark:border-neutral-800 p-4">
-            <div className="flex items-center gap-2 mb-3">
-                <span className="inline-block w-2 h-2 rounded-full bg-[#1D428A] flex-shrink-0" />
-                <span className="text-sm font-semibold">Warriors</span>
+            <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center gap-2">
+                    <span className="inline-block w-2 h-2 rounded-full bg-[#1D428A] flex-shrink-0" />
+                    <span className="text-sm font-semibold">Warriors</span>
+                </div>
+                {record && (
+                    <span className="text-xs text-neutral-500 dark:text-neutral-400">{record}</span>
+                )}
             </div>
 
             {loading && (

@@ -1,5 +1,6 @@
 'use client';
 import { useEffect, useState } from "react";
+import { ThemeToggle } from "./ThemeToggle";
 
 export const Clock = () => {
     const [time, setTime] = useState(new Date());
@@ -24,7 +25,10 @@ export const Header = () => {
     return (
         <div className="flex justify-between">
             <span>Boston, USA</span>
-            <Clock />
+            <div className="flex items-center gap-4">
+                <ThemeToggle />
+                <Clock />
+            </div>
         </div>
     )
 }

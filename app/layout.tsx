@@ -37,7 +37,10 @@ export const metadata: Metadata = {
 
 export default function RootLayout() {
     return (
-        <html>
+        <html suppressHydrationWarning>
+          <head>
+            <script dangerouslySetInnerHTML={{__html: `(function(){var t=localStorage.getItem('theme');if(t==='dark'||(!t&&window.matchMedia('(prefers-color-scheme: dark)').matches)){document.documentElement.classList.add('dark')}})()`}} />
+          </head>
           <body className="antialiased max-w-xl min-h-screen mx-4 mt-8 lg:mx-auto">
             <div className="min-h-screen flex flex-col px-2 md:px-0">
             <Header />
@@ -47,4 +50,5 @@ export default function RootLayout() {
           </body>
         </html>
     );
+
 }

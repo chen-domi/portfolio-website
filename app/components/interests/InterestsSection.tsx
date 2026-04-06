@@ -3,6 +3,7 @@
 import dynamic from 'next/dynamic';
 import { F1Widget } from './F1Widget';
 import { WarriorsWidget } from './WarriorsWidget';
+import { RestaurantsWidget } from './RestaurantsWidget';
 
 const TravelMap = dynamic(() => import('./TravelMap'), {
     ssr: false,
@@ -17,6 +18,7 @@ export const InterestsSection = () => (
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <F1Widget />
             <WarriorsWidget />
+            {/* <RestaurantsWidget /> */}
         </div>
     </div>
 );

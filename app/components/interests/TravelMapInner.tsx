@@ -22,6 +22,7 @@ const TRAVEL_LOCATIONS: { name: string; lat: number; lng: number }[] = [
     { name: 'Paris, France',     lat: 48.8566,  lng: 2.3522   },
     { name: 'Montreal, Canada',  lat: 45.5017,  lng: -73.5673 },
     { name: 'Budapest, Hungary', lat: 47.4979,  lng: 19.0402  },
+    { name: 'Las Vegas, USA',   lat: 36.1699,  lng: -115.1398 },
 ];
 
 export const TravelMapInner = () => (
