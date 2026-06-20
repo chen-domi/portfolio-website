@@ -1,0 +1,29 @@
+@import "tailwindcss";
+
+:root {
+  --paper: #f6f3ec;
+  --ink: #1d1b18;
+  --ink-soft: #5b5650;
+  --rule: #1d1b18;
+  --rule-light: #cfc9bd;
+  --accent: #8a3324;
+}
+
+@theme inline {
+  --color-paper: var(--paper);
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+  --color-rule: var(--rule);
+  --color-rule-light: var(--rule-light);
+  --color-accent: var(--accent);
+  --font-serif: var(--font-source-serif), Georgia, serif;
+  --font-mono: var(--font-courier-prime), "Courier New", ui-monospace, monospace;
+}
+
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-serif);
+  font-size: 16px;
+  line-height: 1.55;
+}
