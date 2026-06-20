@@ -4,7 +4,9 @@ import Abstract from "@/components/Abstract";
 import AboutSection from "@/components/AboutSection";
 import BuiltEntryCard from "@/components/BuiltEntryCard";
 import SkillsGrid from "@/components/SkillsGrid";
-import Tabs from "@/components/Tabs";
+import InterestsSection from "@/components/InterestsSection";
+import SectionNav from "@/components/SectionNav";
+import SectionHeading from "@/components/SectionHeading";
 import Footer from "@/components/Footer";
 import { builtEntries, skills } from "@/lib/data";
 
@@ -15,29 +17,36 @@ export default function Home() {
       <MetaLine />
       <Abstract />
 
-      <Tabs
-        tabs={[
-          { id: "about", numeral: "I", label: "About", content: <AboutSection /> },
-          {
-            id: "built",
-            numeral: "II",
-            label: "Built",
-            content: (
-              <>
-                {builtEntries.map((entry) => (
-                  <BuiltEntryCard key={entry.title} entry={entry} />
-                ))}
-              </>
-            ),
-          },
-          {
-            id: "skills",
-            numeral: "III",
-            label: "Skills",
-            content: <SkillsGrid skills={skills} />,
-          },
+      <SectionNav
+        sections={[
+          { id: "about", numeral: "I", label: "About" },
+          { id: "built", numeral: "II", label: "Built" },
+          { id: "skills", numeral: "III", label: "Skills" },
+          { id: "interests", numeral: "IV", label: "Interests" },
         ]}
       />
+
+      <section id="about" className="scroll-mt-20 mt-10">
+        <SectionHeading numeral="I" label="About" />
+        <AboutSection />
+      </section>
+
+      <section id="built" className="scroll-mt-20 mt-12">
+        <SectionHeading numeral="II" label="Built" />
+        {builtEntries.map((entry) => (
+          <BuiltEntryCard key={entry.title} entry={entry} />
+        ))}
+      </section>
+
+      <section id="skills" className="scroll-mt-20 mt-12">
+        <SectionHeading numeral="III" label="Skills" />
+        <SkillsGrid skills={skills} />
+      </section>
+
+      <section id="interests" className="scroll-mt-20 mt-12">
+        <SectionHeading numeral="IV" label="Interests" />
+        <InterestsSection />
+      </section>
 
       <Footer />
     </main>
