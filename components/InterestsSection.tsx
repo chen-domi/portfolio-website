@@ -1,57 +1,125 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { fetchF1Standings, fetchTeamRecord, F1Standings, TeamRecord } from "@/lib/sports";
+import {
+  fetchF1Standings,
+  fetchF1LastRace,
+  fetchF1NextRace,
+  fetchTeamRecord,
+  fetchLastGame,
+  F1Standings,
+  F1LastRace,
+  F1NextRace,
+  TeamRecord,
+  LastGame,
+} from "@/lib/sports";
 
-function F1Widget() {
-  const [data, setData] = useState<F1Standings | null>(null);
+function formatDate(iso: string) {
+  return new Date(iso).toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  });
+}
+
+function F1Card() {
+  const [standings, setStandings] = useState<F1Standings | null>(null);
+  const [lastRace, setLastRace] = useState<F1LastRace | null>(null);
+  const [nextRace, setNextRace] = useState<F1NextRace | null>(null);
   const [error, setError] = useState(false);
 
   useEffect(() => {
-    fetchF1Standings()
-      .then(setData)
+    Promise.all([fetchF1Standings(), fetchF1LastRace(), fetchF1NextRace()])
+      .then(([s, last, next]) => {
+        setStandings(s);
+        setLastRace(last);
+        setNextRace(next);
+      })
       .catch(() => setError(true));
   }, []);
 
-  if (error) {
-    return <p className="text-[14px] text-ink-soft italic">Live standings unavailable right now.</p>;
-  }
-
-  if (!data) {
-    return <p className="text-[14px] text-ink-soft italic">fetching live standings…</p>;
-  }
-
   return (
-    <div>
-      <div className="flex gap-8 mb-5">
-        {data.constructors.map((c) => (
-          <div key={c.id}>
-            <div className="font-mono text-[22px] text-accent leading-none">P{c.position}</div>
-            <div className="text-[14px]">{c.name}</div>
-            <div className="font-mono text-[11px] text-ink-soft">{c.points} pts</div>
-          </div>
-        ))}
+    <div className="border border-rule p-5 mb-5">
+      <div className="font-mono text-[11px] text-accent uppercase tracking-wide mb-4">
+        Formula 1
       </div>
-      <div className="font-mono text-[13px] mb-3">
-        {data.drivers.map((d) => (
-          <div key={d.id} className="flex justify-between border-b border-rule-light py-1.5">
-            <span>
-              <span className="text-accent">P{d.position}</span> {d.name} ({d.code})
-            </span>
-            <span className="text-ink-soft">
-              {d.team} · {d.points} pts
-            </span>
+
+      {error && <p className="text-[14px] text-ink-soft italic">Live data unavailable right now.</p>}
+
+      {!error && !standings && (
+        <p className="text-[14px] text-ink-soft italic">fetching live standings…</p>
+      )}
+
+      {standings && (
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
+          <div>
+            <div className="flex gap-8 mb-4">
+              {standings.constructors.map((c) => (
+                <div key={c.id}>
+                  <div className="font-mono text-[22px] text-accent leading-none">P{c.position}</div>
+                  <div className="text-[14px]">{c.name}</div>
+                  <div className="font-mono text-[11px] text-ink-soft">{c.points} pts</div>
+                </div>
+              ))}
+            </div>
+            <div className="font-mono text-[13px]">
+              {standings.drivers.map((d) => (
+                <div key={d.id} className="flex justify-between border-b border-rule-light py-1.5">
+                  <span>
+                    <span className="text-accent">P{d.position}</span> {d.name} ({d.code})
+                  </span>
+                  <span className="text-ink-soft">
+                    {d.team} · {d.points} pts
+                  </span>
+                </div>
+              ))}
+            </div>
+            <p className="font-mono text-[10px] text-ink-soft mt-2">
+              F1 {standings.season} round {standings.round}
+            </p>
           </div>
-        ))}
-      </div>
-      <p className="font-mono text-[10px] text-ink-soft">
-        live · F1 {data.season} round {data.round} · via Ergast API
-      </p>
+
+          <div className="border-t sm:border-t-0 sm:border-l border-rule-light pt-4 sm:pt-0 sm:pl-6">
+            {lastRace && (
+              <div className="mb-4">
+                <div className="font-mono text-[10px] text-ink-soft uppercase tracking-wide mb-1.5">
+                  Last race
+                </div>
+                <div className="text-[14px] mb-0.5">{lastRace.raceName}</div>
+                <div className="font-mono text-[11px] text-ink-soft mb-2">
+                  {lastRace.locality}, {lastRace.country}
+                </div>
+                <div className="font-mono text-[12px]">
+                  {lastRace.podium.map((p) => (
+                    <div key={p.position} className="flex justify-between py-0.5">
+                      <span>
+                        <span className="text-accent">{p.position}</span> {p.code}
+                      </span>
+                      <span className="text-ink-soft">{p.time}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+            {nextRace && (
+              <div>
+                <div className="font-mono text-[10px] text-ink-soft uppercase tracking-wide mb-1.5">
+                  Next race
+                </div>
+                <div className="text-[14px] mb-0.5">{nextRace.raceName}</div>
+                <div className="font-mono text-[11px] text-ink-soft">
+                  {nextRace.locality}, {nextRace.country} · {formatDate(nextRace.date)}
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
 
-function TeamRecordRow({
+function TeamCard({
   sport,
   league,
   slug,
@@ -62,35 +130,69 @@ function TeamRecordRow({
   slug: string;
   label: string;
 }) {
-  const [data, setData] = useState<TeamRecord | null>(null);
+  const [record, setRecord] = useState<TeamRecord | null>(null);
+  const [lastGame, setLastGame] = useState<LastGame | null>(null);
   const [error, setError] = useState(false);
 
   useEffect(() => {
     fetchTeamRecord(sport, league, slug)
-      .then(setData)
+      .then((r) => {
+        setRecord(r);
+        return fetchLastGame(sport, league, slug, r.id);
+      })
+      .then(setLastGame)
       .catch(() => setError(true));
   }, [sport, league, slug]);
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-[120px_1fr] gap-1.5 sm:gap-5.5 mb-6">
-      <div className="font-mono text-[11px] text-accent uppercase tracking-wide pt-0.5">
+    <div className="border border-rule p-5">
+      <div className="font-mono text-[11px] text-accent uppercase tracking-wide mb-3">
         {label}
       </div>
-      <div className="text-[14px]">
-        {error && <p className="text-ink-soft italic">Live record unavailable right now.</p>}
-        {!error && !data && <p className="text-ink-soft italic">fetching live record…</p>}
-        {data && (
-          <div className="font-mono text-[13px]">
-            <div>{data.standingSummary ?? data.displayName}</div>
-            {data.overallSummary && (
-              <div className="text-ink-soft">record: {data.overallSummary}</div>
-            )}
-            {data.nextEvent && (
-              <div className="text-ink-soft">next: {data.nextEvent.name}</div>
+
+      {error && <p className="text-[14px] text-ink-soft italic">Live data unavailable right now.</p>}
+
+      {!error && !record && <p className="text-[14px] text-ink-soft italic">fetching live record…</p>}
+
+      {record && (
+        <div className="font-mono text-[13px]">
+          <div className="mb-3">
+            {record.standingSummary ?? record.displayName}
+            {record.overallSummary && (
+              <span className="text-ink-soft"> · {record.overallSummary}</span>
             )}
           </div>
-        )}
-      </div>
+
+          {lastGame && (
+            <div className="mb-3">
+              <div className="text-[10px] text-ink-soft uppercase tracking-wide mb-1">
+                Last game
+              </div>
+              <div className="flex justify-between">
+                <span>
+                  <span className="text-accent">{lastGame.result}</span>{" "}
+                  {lastGame.isHome ? "vs" : "@"} {lastGame.opponent}
+                </span>
+                <span className="text-ink-soft">
+                  {lastGame.teamScore}-{lastGame.opponentScore}
+                </span>
+              </div>
+            </div>
+          )}
+
+          {record.nextEvent && (
+            <div>
+              <div className="text-[10px] text-ink-soft uppercase tracking-wide mb-1">
+                Next game
+              </div>
+              <div className="flex justify-between">
+                <span>{record.nextEvent.name}</span>
+                <span className="text-ink-soft">{formatDate(record.nextEvent.date)}</span>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }
@@ -98,13 +200,10 @@ function TeamRecordRow({
 export default function InterestsSection() {
   return (
     <div>
-      <p className="text-ink-soft text-[15px] mb-5">
-        Formula 1, the Warriors, and the 49ers — pulled live, not pasted in.
-      </p>
-      <F1Widget />
-      <div className="mt-8">
-        <TeamRecordRow sport="basketball" league="nba" slug="gsw" label="Warriors" />
-        <TeamRecordRow sport="football" league="nfl" slug="sf" label="49ers" />
+      <F1Card />
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+        <TeamCard sport="basketball" league="nba" slug="gsw" label="Warriors" />
+        <TeamCard sport="football" league="nfl" slug="sf" label="49ers" />
       </div>
     </div>
   );
