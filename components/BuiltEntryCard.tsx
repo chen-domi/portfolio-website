@@ -14,15 +14,20 @@ export default function BuiltEntryCard({ entry }: { entry: BuiltEntry }) {
         {entry.footnote && (
           <p className="text-[12.5px] text-ink-soft italic">{entry.footnote}</p>
         )}
-        {entry.link && (
-          <a
-            href={entry.link.href}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="font-mono text-[11px] mt-1 inline-block text-ink border-b border-ink no-underline"
-          >
-            {entry.link.label}
-          </a>
+        {entry.links && entry.links.length > 0 && (
+          <div className="flex gap-4 mt-1">
+            {entry.links.map((link) => (
+              <a
+                key={link.href}
+                href={link.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-mono text-[11px] inline-block text-ink border-b border-ink no-underline"
+              >
+                {link.label}
+              </a>
+            ))}
+          </div>
         )}
       </div>
     </div>
