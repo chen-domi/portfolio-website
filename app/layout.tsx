@@ -18,6 +18,12 @@ export const metadata: Metadata = {
   title: "Dominic Chen — Working Notes",
   description:
     "Notes on pricing, code, and the long approach to quant development.",
+  icons: {
+    icon: [
+      { url: "/dc-logo-favicon.ico" },
+      { url: "/dc-logo-favicon.png", type: "image/png" },
+    ],
+  },
 };
 
 export default function RootLayout({
