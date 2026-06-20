@@ -1,8 +1,6 @@
 import path from "node:path";
 import type { NextConfig } from "next";
-
-const isProd = process.env.NODE_ENV === "production";
-const basePath = isProd ? "/portfolio-website" : "";
+import { basePath } from "./lib/basePath";
 
 const nextConfig: NextConfig = {
   output: "export",

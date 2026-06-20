@@ -1,4 +1,5 @@
 import LiveClock from "@/components/LiveClock";
+import { basePath } from "@/lib/basePath";
 
 export default function Masthead() {
   return (
@@ -8,7 +9,7 @@ export default function Masthead() {
         <LiveClock />
       </div>
       <img
-        src="/headshot-square.png"
+        src={`${basePath}/headshot-square.png`}
         alt="Dominic Chen"
         className="w-24 h-24 rounded-2xl object-cover mx-auto mb-3"
       />

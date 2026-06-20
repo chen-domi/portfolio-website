@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Source_Serif_4, Courier_Prime } from "next/font/google";
+import { basePath } from "@/lib/basePath";
 import "./globals.css";
 
 const sourceSerif = Source_Serif_4({
@@ -20,8 +21,8 @@ export const metadata: Metadata = {
     "Notes on pricing, code, and the long approach to quant development.",
   icons: {
     icon: [
-      { url: "/dc-logo-favicon.ico" },
-      { url: "/dc-logo-favicon.png", type: "image/png" },
+      { url: `${basePath}/dc-logo-favicon.ico` },
+      { url: `${basePath}/dc-logo-favicon.png`, type: "image/png" },
     ],
   },
 };
