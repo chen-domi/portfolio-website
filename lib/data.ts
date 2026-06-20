@@ -31,12 +31,6 @@ export const builtEntries: BuiltEntry[] = [
   },
 ];
 
-export const currentEntry = {
-  title: "Black-Scholes Pricing Engine",
-  tools: "python · numpy · scipy · matplotlib",
-  body: "A European option pricer rebuilt from the model up — closed-form pricing, the full Greek family, and an implied volatility solver, with a surface visualizer so errors show up visually before they show up numerically. The aim is to understand the pricing surface well enough that production libraries stop reading as black boxes.",
-};
-
 export const skills: { label: string; value: string }[] = [
   {
     label: "Languages",
@@ -48,38 +42,4 @@ export const skills: { label: string; value: string }[] = [
       "NumPy · Pandas · Matplotlib · yfinance · Node.js · Next.js · React.js · PostgreSQL · MySQL",
   },
   { label: "Tools", value: "Git · GitHub · Docker" },
-];
-
-export type ReadingItem = {
-  kind: "Paper" | "Book" | "Article";
-  name: string;
-  by: string;
-};
-
-export const reading: ReadingItem[] = [
-  {
-    kind: "Paper",
-    name: "The Pricing of Options and Corporate Liabilities",
-    by: "Black & Scholes, 1973 — the foundation for the work above.",
-  },
-  {
-    kind: "Book",
-    name: "Options, Futures, and Other Derivatives",
-    by: "John Hull — the core derivatives pricing curriculum.",
-  },
-  {
-    kind: "Book",
-    name: "What I Learned Losing a Million Dollars",
-    by: "Jim Paul & Brendan Moynihan — risk and psychology over strategy.",
-  },
-  {
-    kind: "Article",
-    name: "Market Microstructure and the Limits of Liquidity",
-    by: "On how execution quality shapes realized strategy returns.",
-  },
-  {
-    kind: "Paper",
-    name: "A Theory of the Term Structure of Interest Rates",
-    by: "Cox, Ingersoll & Ross, 1985 — background for rate-sensitive pricing.",
-  },
 ];

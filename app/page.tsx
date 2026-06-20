@@ -1,14 +1,12 @@
 import Masthead from "@/components/Masthead";
 import MetaLine from "@/components/MetaLine";
 import Abstract from "@/components/Abstract";
-import SectionHeading from "@/components/SectionHeading";
 import AboutSection from "@/components/AboutSection";
 import BuiltEntryCard from "@/components/BuiltEntryCard";
-import CurrentEntryCard from "@/components/CurrentEntryCard";
 import SkillsGrid from "@/components/SkillsGrid";
-import ReadingTable from "@/components/ReadingTable";
+import Tabs from "@/components/Tabs";
 import Footer from "@/components/Footer";
-import { builtEntries, currentEntry, skills, reading } from "@/lib/data";
+import { builtEntries, skills } from "@/lib/data";
 
 export default function Home() {
   return (
@@ -17,26 +15,29 @@ export default function Home() {
       <MetaLine />
       <Abstract />
 
-      <SectionHeading numeral="I">About</SectionHeading>
-      <AboutSection />
-
-      <SectionHeading numeral="II">Built</SectionHeading>
-      {builtEntries.map((entry) => (
-        <BuiltEntryCard key={entry.title} entry={entry} />
-      ))}
-
-      <SectionHeading numeral="III">Building</SectionHeading>
-      <CurrentEntryCard
-        title={currentEntry.title}
-        tools={currentEntry.tools}
-        body={currentEntry.body}
+      <Tabs
+        tabs={[
+          { id: "about", numeral: "I", label: "About", content: <AboutSection /> },
+          {
+            id: "built",
+            numeral: "II",
+            label: "Built",
+            content: (
+              <>
+                {builtEntries.map((entry) => (
+                  <BuiltEntryCard key={entry.title} entry={entry} />
+                ))}
+              </>
+            ),
+          },
+          {
+            id: "skills",
+            numeral: "III",
+            label: "Skills",
+            content: <SkillsGrid skills={skills} />,
+          },
+        ]}
       />
-
-      <SectionHeading numeral="IV">Skills</SectionHeading>
-      <SkillsGrid skills={skills} />
-
-      <SectionHeading numeral="V">Reading</SectionHeading>
-      <ReadingTable items={reading} />
 
       <Footer />
     </main>
