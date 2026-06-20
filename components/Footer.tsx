@@ -12,6 +12,15 @@ export default function Footer() {
           github
         </a>
         {"  "}
+        <a
+          href="https://www.linkedin.com/in/chendomi"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-ink no-underline border-b border-ink"
+        >
+          linkedin
+        </a>
+        {"  "}
         <a href="#" className="text-ink no-underline border-b border-ink">
           email
         </a>
