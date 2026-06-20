@@ -1,5 +1,4 @@
 import LiveClock from "@/components/LiveClock";
-import { basePath } from "@/lib/basePath";
 
 export default function Masthead() {
   return (
@@ -8,12 +7,7 @@ export default function Masthead() {
         <span>Boston, USA</span>
         <LiveClock />
       </div>
-      <img
-        src={`${basePath}/headshot-square.png`}
-        alt="Dominic Chen"
-        className="w-24 h-24 rounded-2xl object-cover mx-auto mb-3"
-      />
-      <h1 className="text-4xl font-normal tracking-tight mb-1 text-center">Dominic Chen</h1>
+      <h1 className="text-4xl font-normal tracking-tight mb-1">Dominic Chen</h1>
     </div>
   );
 }
