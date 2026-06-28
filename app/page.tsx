@@ -1,6 +1,6 @@
 import Masthead from "@/components/Masthead";
 import MetaLine from "@/components/MetaLine";
-import Abstract from "@/components/Abstract";
+// import Abstract from "@/components/Abstract";
 import AboutSection from "@/components/AboutSection";
 import BuiltEntryCard from "@/components/BuiltEntryCard";
 import SkillsGrid from "@/components/SkillsGrid";
@@ -15,7 +15,7 @@ export default function Home() {
     <main className="max-w-190 mx-auto px-9 py-16 pb-24">
       <Masthead />
       <MetaLine />
-      <Abstract />
+      {/* <Abstract /> */}
 
       <SectionNav
         sections={[
